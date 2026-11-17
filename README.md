@@ -33,9 +33,13 @@ Glass is applied to the login card, topbar, sidebar, sections, tables, stat bloc
 
 In the server list, each server's image fills its whole card and fades in from the left. Set `--glass-server-image-opacity` (default `0.35`) in `theme.css` to make it stronger or weaker.
 
+Icon previews (egg and server edit pages, server settings, icon upload) use a 16:9 box and show the whole image, so wide images are no longer squashed.
+
 ## Notes
 
 - Settings are stored in the panel's `.env` as `FROSTED_GLASS_*`, so plugin updates keep them.
 - The milk color uses CSS `color-mix()`, which needs a browser from 2023 or later.
-- Many blurred surfaces over a fixed background can cost some scroll performance on weak devices.
+- Many blurred surfaces over a fixed background can cost some scroll performance on weak devices. On screens up to 768 px wide the blur is halved.
+- If transparency effects are turned off in the operating system (`prefers-reduced-transparency`), or the browser lacks `backdrop-filter`, surfaces turn near-solid.
+- In dark mode, text on glass gets a soft shadow so it stays readable over bright images.
 - If the Login Styler plugin sets a login background, it overrides the theme on the login page.

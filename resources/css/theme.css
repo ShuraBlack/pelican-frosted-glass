@@ -3,6 +3,7 @@
 :root {
     --glass-radius: 18px;
     --glass-blur: 16px;
+    --glass-blur-effective: var(--glass-blur);
     --glass-tint: 0.3;
     --glass-stone: #8e9195; /* light granite */
     --glass-image: none;
@@ -42,25 +43,69 @@ body.fi-body {
     background-attachment: fixed;
 }
 
-/* Glass surfaces: tint + sheen + blur + bright top edge */
+/* Glass surfaces.
+   The blur sits on a ::before layer behind the content, never on the element itself:
+   backdrop-filter turns an element into the containing block for fixed-position children,
+   which would trap e.g. the notifications slide-over inside the topbar. */
 .fi-simple-main,
 .fi-topbar,
-.fi-section,
+.fi-section:not(.fi-section-not-contained),
 .fi-ta-ctn,
 .fi-small-stat-block,
 .fi-wi-stats-overview-stat,
-.fi-sidebar.fi-sidebar-open {
-    background-color: var(--glass-bg) !important;
-    -webkit-backdrop-filter: blur(var(--glass-blur));
-    backdrop-filter: blur(var(--glass-blur));
+.fi-sidebar.fi-sidebar-open,
+.fi-modal-window,
+.fi-dropdown-panel {
+    isolation: isolate; /* keeps the z-index: -1 layer inside the element */
+    background-color: var(--glass-bg) !important; /* on the element, so it also covers scrolled content */
     box-shadow: var(--glass-shadow), inset 0 1px 0 var(--glass-highlight), 0 0 0 1px var(--glass-edge) !important;
 }
 
+/* The others are already positioned (relative, absolute or fixed). */
 .fi-simple-main,
-.fi-section,
+.fi-topbar,
+.fi-section:not(.fi-section-not-contained),
+.fi-small-stat-block {
+    position: relative;
+}
+
+.fi-simple-main::before,
+.fi-topbar::before,
+.fi-section:not(.fi-section-not-contained)::before,
+.fi-ta-ctn::before,
+.fi-small-stat-block::before,
+.fi-wi-stats-overview-stat::before,
+.fi-sidebar.fi-sidebar-open::before,
+.fi-modal-window::before,
+.fi-dropdown-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    pointer-events: none;
+    -webkit-backdrop-filter: blur(var(--glass-blur-effective));
+    backdrop-filter: blur(var(--glass-blur-effective));
+}
+
+/* Overlays sit on top of content, so they need more opacity to stay readable. */
+.fi-modal-window,
+.fi-dropdown-panel {
+    background-color: var(--glass-bg-strong) !important;
+}
+
+.fi-modal-window::before,
+.fi-dropdown-panel::before {
+    -webkit-backdrop-filter: blur(var(--glass-blur-effective)) saturate(160%);
+    backdrop-filter: blur(var(--glass-blur-effective)) saturate(160%);
+}
+
+.fi-simple-main,
+.fi-section:not(.fi-section-not-contained),
 .fi-ta-ctn,
 .fi-small-stat-block,
-.fi-wi-stats-overview-stat {
+.fi-wi-stats-overview-stat,
+.fi-modal-window {
     border-radius: var(--glass-radius) !important;
 }
 
@@ -74,29 +119,26 @@ body.fi-body {
     background-color: rgb(0 0 0 / 0.35);
 }
 
-/* Overlays sit on top of content, so they need more opacity to stay readable. */
-.fi-modal-window,
-.fi-dropdown-panel {
-    background-color: var(--glass-bg-strong) !important;
-    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(160%);
-    backdrop-filter: blur(var(--glass-blur)) saturate(160%);
-    box-shadow: var(--glass-shadow), 0 0 0 1px var(--glass-edge) !important;
+/* Icon previews (egg, server): Pelican forces 150x150 inline, which squashes wide images.
+   16:9 box instead, whole image shown without distortion. */
+img.fi-sc-image {
+    width: min(100%, 16rem) !important;
+    height: auto !important;
+    aspect-ratio: 16 / 9;
+    object-fit: contain;
 }
 
-.fi-modal-window {
-    border-radius: var(--glass-radius) !important;
-}
-
-footer {
+/* Pelican's page footer only; Filament's own footers (e.g. .fi-section-footer) all carry fi- classes. */
+footer:not([class*="fi-"]) {
     padding: 10px 15px !important;
     border-radius: var(--glass-radius) var(--glass-radius) 0 0 !important;
     background-color: transparent !important;
-    -webkit-backdrop-filter: blur(var(--glass-blur));
-    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur-effective));
+    backdrop-filter: blur(var(--glass-blur-effective));
     box-shadow: var(--glass-shadow), inset 0 1px 0 var(--glass-highlight) !important;
 }
 
-footer a {
+footer:not([class*="fi-"]) a {
     text-shadow: 0 0 5px rgb(0 0 0 / 0.3);
 }
 
@@ -140,8 +182,8 @@ footer a {
 /* Console: dark glass instead of xterm's fixed background */
 #terminal {
     background-color: var(--glass-console-bg);
-    -webkit-backdrop-filter: blur(var(--glass-blur));
-    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur-effective));
+    backdrop-filter: blur(var(--glass-blur-effective));
     box-shadow: var(--glass-shadow), inset 0 1px 0 var(--glass-highlight), 0 0 0 1px var(--glass-edge);
     border-top-left-radius: var(--glass-radius) !important;
     border-top-right-radius: var(--glass-radius) !important;
@@ -163,8 +205,8 @@ footer a {
 /* Command input bar under the console */
 div:has(> #send-command) {
     background-color: var(--glass-console-bg) !important;
-    -webkit-backdrop-filter: blur(var(--glass-blur));
-    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur-effective));
+    backdrop-filter: blur(var(--glass-blur-effective));
     border-top: 1px solid var(--glass-edge);
     border-bottom-left-radius: var(--glass-radius) !important;
     border-bottom-right-radius: var(--glass-radius) !important;
@@ -174,4 +216,31 @@ div:has(> #send-command) {
 #send-command {
     background-color: transparent !important;
     color: #fff;
+}
+
+/* Dark mode: a soft shadow keeps light text readable on glass over bright images. */
+:root.dark :is(.fi-simple-main, .fi-topbar, .fi-section, .fi-ta-ctn, .fi-small-stat-block, .fi-wi-stats-overview-stat, .fi-sidebar, .fi-modal-window, .fi-dropdown-panel) {
+    text-shadow: 0 1px 2px rgb(0 0 0 / 0.35);
+}
+
+/* Small screens: half the blur, it is the most expensive part of the theme. */
+@media (max-width: 768px) {
+    :root {
+        --glass-blur-effective: calc(var(--glass-blur) / 2);
+    }
+}
+
+/* No backdrop-filter support, or the user turned transparency effects off: near-solid surfaces. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    :root {
+        --glass-bg: var(--glass-bg-strong);
+    }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+    :root {
+        --glass-bg: var(--glass-bg-strong);
+        --glass-console-bg: rgb(12 14 17 / 0.95);
+        --glass-blur-effective: 0px;
+    }
 }
