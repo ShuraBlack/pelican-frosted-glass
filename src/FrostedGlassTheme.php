@@ -4,6 +4,7 @@ namespace ShuraBlack\FrostedGlass;
 
 use App\Contracts\Plugins\HasPluginSettings;
 use App\Contracts\Plugins\HasTheme;
+use App\Traits\EnvironmentWriterTrait;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -11,9 +12,12 @@ use Filament\Notifications\Notification;
 use Filament\Panel;
 use Filament\Schemas\Components\Section;
 use Filament\View\PanelsRenderHook;
+use Throwable;
 
 class FrostedGlassTheme implements HasPluginSettings, HasTheme
 {
+    use EnvironmentWriterTrait;
+
     /** option => [label, background-size, background-repeat] */
     private const IMAGE_FITS = [
         'cover' => ['Fill screen', 'cover', 'no-repeat'],
@@ -97,9 +101,7 @@ class FrostedGlassTheme implements HasPluginSettings, HasTheme
 
     public function getSettingsFormData(): array
     {
-        $path = self::settingsPath();
-
-        return is_file($path) ? (json_decode((string) file_get_contents($path), true) ?? []) : [];
+        return config('frosted-glass', []);
     }
 
     public function getSettingsForm(): array
@@ -128,20 +130,20 @@ class FrostedGlassTheme implements HasPluginSettings, HasTheme
 
     public function saveSettings(array $data): void
     {
-        $json = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        $values = [];
+        foreach (array_keys(config('frosted-glass', [])) as $key) {
+            $values['FROSTED_GLASS_' . strtoupper($key)] = (string) ($data[$key] ?? '');
+        }
 
         // The panel swallows exceptions from saveSettings, so report failure ourselves.
-        if (@file_put_contents(self::settingsPath(), $json) === false) {
-            Notification::make()->title('Could not write ' . self::settingsPath())->danger()->send();
+        try {
+            $this->writeToEnvironment($values);
+        } catch (Throwable $exception) {
+            Notification::make()->title('Could not save settings')->body($exception->getMessage())->danger()->send();
 
             return;
         }
 
         Notification::make()->title('Theme settings saved')->success()->send();
-    }
-
-    private static function settingsPath(): string
-    {
-        return storage_path('app/frosted-glass.json');
     }
 }

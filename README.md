@@ -33,7 +33,7 @@ Glass is applied to the login card, topbar, sidebar, sections, tables, modals, d
 
 ## Notes
 
-- Settings are stored in `storage/app/frosted-glass.json`, so plugin updates keep them.
+- Settings are stored in the panel's `.env` as `FROSTED_GLASS_*`, so plugin updates keep them.
 - The milk color uses CSS `color-mix()`, which needs a browser from 2023 or later.
 - Many blurred surfaces over a fixed background can cost some scroll performance on weak devices.
 - If the Login Styler plugin sets a login background, it overrides the theme on the login page.
