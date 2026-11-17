@@ -17,6 +17,8 @@
     --glass-edge: rgb(255 255 255 / 0.55);
     --glass-highlight: rgb(255 255 255 / 0.6);
     --glass-shadow: 0 8px 32px rgb(0 0 0 / 0.25);
+    --glass-scrollbar: rgb(0 0 0 / 0.3);
+    --glass-console-bg: rgb(12 14 17 / 0.6); /* xterm text is light in both modes, so the console stays dark */
 }
 
 :root.dark {
@@ -26,6 +28,7 @@
     --glass-edge: rgb(255 255 255 / 0.12);
     --glass-highlight: rgb(255 255 255 / 0.15);
     --glass-shadow: 0 8px 32px rgb(0 0 0 / 0.45);
+    --glass-scrollbar: rgb(255 255 255 / 0.25);
 }
 
 /* Granite color, or the background image from the settings (the blur shows best on an image). */
@@ -44,6 +47,8 @@ body.fi-body {
 .fi-topbar,
 .fi-section,
 .fi-ta-ctn,
+.fi-small-stat-block,
+.fi-wi-stats-overview-stat,
 .fi-sidebar.fi-sidebar-open {
     background-color: var(--glass-bg) !important;
     -webkit-backdrop-filter: blur(var(--glass-blur));
@@ -53,13 +58,20 @@ body.fi-body {
 
 .fi-simple-main,
 .fi-section,
-.fi-ta-ctn {
+.fi-ta-ctn,
+.fi-small-stat-block,
+.fi-wi-stats-overview-stat {
     border-radius: var(--glass-radius) !important;
 }
 
 /* Pelican's own dark cards (server list etc.) would hide the glass behind them. */
 :root.dark .dark\:bg-gray-800 {
     background-color: rgb(255 255 255 / 0.06);
+}
+
+/* Inputs: Filament's dark inputs are only 5 % white, which gets unreadable over glass on a bright image. */
+:root.dark .fi-input-wrp:not(.fi-disabled) {
+    background-color: rgb(0 0 0 / 0.35);
 }
 
 /* Overlays sit on top of content, so they need more opacity to stay readable. */
@@ -104,4 +116,62 @@ footer a {
     opacity: var(--glass-server-image-opacity, 0.35) !important;
     -webkit-mask-image: linear-gradient(to right, transparent, #000 70%);
     mask-image: linear-gradient(to right, transparent, #000 70%);
+}
+
+/* Scrollbars: thin, translucent thumb. Chrome/Edge/Firefox use the standard properties
+   (which also override Pelican's console scrollbar); the ::-webkit rules are the Safari fallback. */
+:root {
+    scrollbar-width: thin;
+    scrollbar-color: var(--glass-scrollbar) transparent;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    border: 2px solid transparent;
+    border-radius: 999px;
+    background: var(--glass-scrollbar) padding-box;
+}
+
+/* Console: dark glass instead of xterm's fixed background */
+#terminal {
+    background-color: var(--glass-console-bg);
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    backdrop-filter: blur(var(--glass-blur));
+    box-shadow: var(--glass-shadow), inset 0 1px 0 var(--glass-highlight), 0 0 0 1px var(--glass-edge);
+    border-top-left-radius: var(--glass-radius) !important;
+    border-top-right-radius: var(--glass-radius) !important;
+}
+
+#terminal .xterm-viewport {
+    background-color: transparent !important;
+}
+
+/* The console is dark in both modes, so its scrollbar is always light. */
+#terminal {
+    scrollbar-color: rgb(255 255 255 / 0.25) transparent;
+}
+
+#terminal ::-webkit-scrollbar-thumb {
+    background-color: rgb(255 255 255 / 0.25);
+}
+
+/* Command input bar under the console */
+div:has(> #send-command) {
+    background-color: var(--glass-console-bg) !important;
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    backdrop-filter: blur(var(--glass-blur));
+    border-top: 1px solid var(--glass-edge);
+    border-bottom-left-radius: var(--glass-radius) !important;
+    border-bottom-right-radius: var(--glass-radius) !important;
+    color: #d0d0d0;
+}
+
+#send-command {
+    background-color: transparent !important;
+    color: #fff;
 }

@@ -29,7 +29,7 @@ Open **Admin → Plugins → Frosted Glass → Settings**.
 
 The styles live in `resources/css/theme.css`. They are inlined on every page load, so edits apply on the next reload with no rebuild. The `--glass-*` variables at the top control the whole look.
 
-Glass is applied to the login card, topbar, sidebar, sections, tables, modals, dropdowns and the footer.
+Glass is applied to the login card, topbar, sidebar, sections, tables, stat blocks (e.g. name, status and address on the server page), modals, dropdowns, the footer and the server console (dark glass in both modes, since console text is light). Scrollbars are thin and translucent to match.
 
 In the server list, each server's image fills its whole card and fades in from the left. Set `--glass-server-image-opacity` (default `0.35`) in `theme.css` to make it stronger or weaker.
 
