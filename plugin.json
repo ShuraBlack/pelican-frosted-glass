@@ -6,7 +6,7 @@
     "description": "Frosted glass theme: translucent, blurred surfaces over a granite background or your own image.",
     "category": "theme",
     "url": null,
-    "update_url": null,
+    "update_url": "https://hub.pelican.dev/plugins/frosted-glass/update.json",
     "namespace": "ShuraBlack\\FrostedGlass",
     "class": "FrostedGlassTheme",
     "panels": null,
