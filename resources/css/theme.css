@@ -87,3 +87,21 @@ footer {
 footer a {
     text-shadow: 0 0 5px rgb(0 0 0 / 0.3);
 }
+
+/* Server list: stretch the server/egg image over the full card height and fade it in from the left.
+   Pelican sets these as inline styles, hence !important. */
+.fi-ta-ctn .cursor-pointer {
+    isolation: isolate;
+}
+
+.fi-ta-ctn .cursor-pointer > .overflow-hidden > div[style*="url("] {
+    z-index: -1; /* behind the text */
+    max-width: none !important;
+    max-height: none !important;
+    border-radius: 0.5rem;
+    background-size: cover !important;
+    background-position: right center !important;
+    opacity: var(--glass-server-image-opacity, 0.35) !important;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 70%);
+    mask-image: linear-gradient(to right, transparent, #000 70%);
+}

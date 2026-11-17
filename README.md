@@ -31,6 +31,8 @@ The styles live in `resources/css/theme.css`. They are inlined on every page loa
 
 Glass is applied to the login card, topbar, sidebar, sections, tables, modals, dropdowns and the footer.
 
+In the server list, each server's image fills its whole card and fades in from the left. Set `--glass-server-image-opacity` (default `0.35`) in `theme.css` to make it stronger or weaker.
+
 ## Notes
 
 - Settings are stored in the panel's `.env` as `FROSTED_GLASS_*`, so plugin updates keep them.
