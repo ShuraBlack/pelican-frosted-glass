@@ -1,0 +1,16 @@
+{
+    "id": "frosted-glass",
+    "name": "Frosted Glass",
+    "author": "ShuraBlack",
+    "version": "1.3.0",
+    "description": "Frosted glass theme: translucent, blurred surfaces over a granite background or your own image.",
+    "category": "theme",
+    "url": null,
+    "update_url": null,
+    "namespace": "ShuraBlack\\FrostedGlass",
+    "class": "FrostedGlassTheme",
+    "panels": null,
+    "panel_version": null,
+    "api_version": 1,
+    "composer_packages": null
+}

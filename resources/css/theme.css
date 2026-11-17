@@ -1,0 +1,89 @@
+/* Frosted Glass theme. Defaults below; the plugin settings override the --glass-* values. */
+
+:root {
+    --glass-radius: 18px;
+    --glass-blur: 16px;
+    --glass-tint: 0.3;
+    --glass-stone: #8e9195; /* light granite */
+    --glass-image: none;
+    --glass-image-size: cover;
+    --glass-image-repeat: no-repeat;
+    --glass-image-position: center;
+    --glass-dim: 0;
+    --glass-overlay: color-mix(in srgb, var(--glass-stone) calc(var(--glass-dim) * 100%), transparent);
+    --glass-color: #ffffff;
+    --glass-bg: color-mix(in srgb, var(--glass-color) calc(var(--glass-tint) * 100%), transparent);
+    --glass-bg-strong: rgb(255 255 255 / 0.85);
+    --glass-edge: rgb(255 255 255 / 0.55);
+    --glass-highlight: rgb(255 255 255 / 0.6);
+    --glass-shadow: 0 8px 32px rgb(0 0 0 / 0.25);
+}
+
+:root.dark {
+    --glass-stone: #3b3d40; /* granite */
+    --glass-tint: 0.08;
+    --glass-bg-strong: rgb(32 34 38 / 0.88);
+    --glass-edge: rgb(255 255 255 / 0.12);
+    --glass-highlight: rgb(255 255 255 / 0.15);
+    --glass-shadow: 0 8px 32px rgb(0 0 0 / 0.45);
+}
+
+/* Granite color, or the background image from the settings (the blur shows best on an image). */
+body.fi-body {
+    background-color: var(--glass-stone);
+    /* First layer: overlay that fades the image into the background color. */
+    background-image: linear-gradient(var(--glass-overlay), var(--glass-overlay)), var(--glass-image);
+    background-size: auto, var(--glass-image-size);
+    background-repeat: no-repeat, var(--glass-image-repeat);
+    background-position: center, var(--glass-image-position);
+    background-attachment: fixed;
+}
+
+/* Glass surfaces: tint + sheen + blur + bright top edge */
+.fi-simple-main,
+.fi-topbar,
+.fi-section,
+.fi-ta-ctn,
+.fi-sidebar.fi-sidebar-open {
+    background-color: var(--glass-bg) !important;
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    backdrop-filter: blur(var(--glass-blur));
+    box-shadow: var(--glass-shadow), inset 0 1px 0 var(--glass-highlight), 0 0 0 1px var(--glass-edge) !important;
+}
+
+.fi-simple-main,
+.fi-section,
+.fi-ta-ctn {
+    border-radius: var(--glass-radius) !important;
+}
+
+/* Pelican's own dark cards (server list etc.) would hide the glass behind them. */
+:root.dark .dark\:bg-gray-800 {
+    background-color: rgb(255 255 255 / 0.06);
+}
+
+/* Overlays sit on top of content, so they need more opacity to stay readable. */
+.fi-modal-window,
+.fi-dropdown-panel {
+    background-color: var(--glass-bg-strong) !important;
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+    backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+    box-shadow: var(--glass-shadow), 0 0 0 1px var(--glass-edge) !important;
+}
+
+.fi-modal-window {
+    border-radius: var(--glass-radius) !important;
+}
+
+footer {
+    padding: 10px 15px !important;
+    border-radius: var(--glass-radius) var(--glass-radius) 0 0 !important;
+    background-color: transparent !important;
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    backdrop-filter: blur(var(--glass-blur));
+    box-shadow: var(--glass-shadow), inset 0 1px 0 var(--glass-highlight) !important;
+}
+
+footer a {
+    text-shadow: 0 0 5px rgb(0 0 0 / 0.3);
+}
